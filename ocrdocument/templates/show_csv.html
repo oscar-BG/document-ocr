@@ -128,7 +128,7 @@
 					<div class="breadcrumb-header justify-content-between">
 						<div class="my-auto">
 							<div class="d-flex">
-								<h4 class="content-title mb-0 my-auto">Documento OCR</h4>
+								<h4 class="content-title mb-0 my-auto">Download Excel</h4>
 							</div>
 						</div>
 						
@@ -136,19 +136,51 @@
 					<!-- breadcrumb -->
 
 					<!-- row -->
-					<div class="row">
+					<div class="row row-sm">
 						<!-- Element HTML -->
 
-						<div class="col-md-12">
-							<form
-							  action="{% url 'upload' %}"
-							  method="post"
-							  enctype="multipart/form-data">
-							  {% csrf_token %} {{ form.as_p }}
-							  <button class="btn btn-info my-4" type="submit">
-								<span><i class="bi bi-upload"></i></span> Subir documentos 
-							  </button>
-							</form>
+						<div class="col-xl-12">
+							<div class="card">
+								<div class="card-header pb-0">
+									<div class="d-flex justify-content-between">
+										<h4 class="card-title mg-b-0">Documentos CSV</h4>
+										<i class="mdi mdi-dots-horizontal text-gray"></i>
+									</div>
+									<!-- <p class="tx-12 tx-gray-500 mb-2">Example of Valex Simple Table. <a href="">Learn more</a></p -->
+								</div>
+								<div class="card-body">
+									<div class="table-responsive">
+											<table class="table mg-b-0 text-md-nowrap">
+												<thead>
+													<tr>
+														<th>ID</th>
+														<th>Documento</th>
+														<th>Descargar</th>
+														<th>Fecha creación</th>
+													</tr>
+												</thead>
+												<tbody>
+
+													{% for item in data %}
+														<tr>
+															<th scope="row">{{ item.id }}</th>
+															<td>
+																<span>{{ item.name_document }}</span>
+															</td>
+															<td>
+																<!-- <a href="{{ item.excel_file.url }}">{{ item.excel_file.name }} -->
+																<a href="{{ item.excel_file.url }}" target="_blank">Descargar documento</a>
+																</a>
+															</td>
+															<td>{{ item.created_at|date:"d-m-Y" }}</td>
+														</tr>
+													{% endfor %}
+													
+												</tbody>
+											</table>
+									</div>
+								</div>
+							</div>
 						</div>
 						
 					</div>

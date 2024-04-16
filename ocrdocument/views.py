@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.conf import settings
+from django.core.files import File
 from .forms import SubirDumentoImagenForm
-from .models import SubirDumentoImagen
+from .models import SaveFileCsv
 import os
 import csv
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'media/credencials/ocr-document.json'
@@ -42,9 +44,11 @@ def upload(request):
 
 
 def listarData(request):
-    data = SubirDumentoImagen.objects.all()
+    # return render(request, 'show_csv.html')
+
+    data = SaveFileCsv.objects.all()
     print(data)
-    return render(request=request, template_name="list_img_file.html", context={'data': data})
+    return render(request=request, template_name="show_csv.html", context={'data' : data})
     
 def get_text_form_pdf_ocr(file_path):
     try:
@@ -86,15 +90,23 @@ def get_text_form_pdf_ocr(file_path):
 
         csv_data = []
         for row in data:
-            csv_data.append([row[0], row[1]])
+            csv_data.append([row[0], row[1], row[2], row[3]])
         
         csv_file_name = os.path.splitext(os.path.basename(file_path))[0] + ".csv"
         csv_file_path = os.path.join("media/csv/", csv_file_name)
 
-        with open(csv_file_path, mode='w', newline='') as csv_file:
+        relative_csv_file_path = os.path.relpath(csv_file_path, settings.MEDIA_ROOT)
+
+        # filtered_data = [row for row in csv_data if any(cell.strip() for cell in row)]
+
+        # print(filtered_data)
+
+        with open(csv_file_path, mode='w', newline='', encoding='utf-8') as csv_file:
             writer = csv.writer(csv_file)
             writer.writerow(['CARD_ID', 'LAST_NAME', 'SECOND_LAST_NAME', 'NAME'])  # Escribir encabezados
-            writer.writerows(data)  # Escribir los datos recolectados
+            writer.writerows(csv_data)  # Escribir los datos recolectados
+
+        new_csv_instance = SaveFileCsv.objects.create(excel_file=relative_csv_file_path, name_document=csv_file_name)
 
         return True
     except Exception as e:

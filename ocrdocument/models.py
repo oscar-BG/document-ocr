@@ -16,3 +16,16 @@ class SubirDumentoImagen(models.Model):
     class Meta:
         db_table = "¨files"
         ordering = ['-created_at']
+
+class SaveFileCsv(models.Model):
+    excel_file = models.FileField(upload_to='csv/')
+    name_document = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "excel_files"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.excel_file.name
