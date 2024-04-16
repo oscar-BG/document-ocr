@@ -1,0 +1,218 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+
+		<meta charset="UTF-8">
+		<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="Description" content="Bootstrap Responsive Admin Web Dashboard HTML5 Template">
+		<meta name="Author" content="Spruko Technologies Private Limited">
+		<meta name="Keywords" content="admin,admin dashboard,admin dashboard template,admin panel template,admin template,admin theme,bootstrap 4 admin template,bootstrap 4 dashboard,bootstrap admin,bootstrap admin dashboard,bootstrap admin panel,bootstrap admin template,bootstrap admin theme,bootstrap dashboard,bootstrap form template,bootstrap panel,bootstrap ui kit,dashboard bootstrap 4,dashboard design,dashboard html,dashboard template,dashboard ui kit,envato templates,flat ui,html,html and css templates,html dashboard template,html5,jquery html,premium,premium quality,sidebar bootstrap 4,template admin bootstrap 4"/>
+
+		<!-- Title -->
+		<title> Valex -  Premium dashboard ui bootstrap rwd admin html5 template </title>
+
+		<!-- Favicon -->
+		<link rel="icon" href="{% static 'img/brand/favicon.png' %}" type="image/x-icon"/>
+
+		<!-- Icons css -->
+		<link href="{% static 'css/icons.css' %}" rel="stylesheet">
+
+		<!--- Internal Select2 css-->
+		<!-- <link href="{% static 'plugins/select2/css/select2.min.css' %}" rel="stylesheet"> -->
+
+		<!--Internal  Quill css -->
+		<link href="{% static 'plugins/quill/quill.snow.css' %}" rel="stylesheet">
+		<link href="{% static 'plugins/quill/quill.bubble.css' %}" rel="stylesheet">
+
+		<!--  Right-sidemenu css -->
+		<link href="{% static 'plugins/sidebar/sidebar.css' %}" rel="stylesheet">
+
+		<!-- P-scroll bar css-->
+		<!-- <link href="{% static 'plugins/perfect-scrollbar/p-scrollbar.css' %}" rel="stylesheet" /> -->
+
+		<!--  Left-Sidebar css -->
+		<link rel="stylesheet" href="{% static 'css/sidemenu3.css' %}">
+
+		<!--- Style css --->
+		<link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+		<!--- Dark-mode css --->
+		<link href="{% static 'css/style-dark.css' %}" rel="stylesheet">
+
+		<!---Skinmodes css-->
+		<link href="{% static 'css/skin-modes.css' %}" rel="stylesheet" />
+
+		<!--- Animations css-->
+		<link href="{% static 'css/animate.css' %}" rel="stylesheet">
+
+		<!-- Iconos -->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+	</head>
+
+	 <body class="hoversubmenu main-body app sidebar-mini">
+
+		<!-- Loader -->
+		<div id="global-loader">
+			<img src="{% static 'img/loader.svg' %}" class="loader-img" alt="Loader">
+		</div>
+		<!-- /Loader -->
+
+		<!-- Page -->
+		<div class="page">
+
+			<!-- main-sidebar -->
+			<div class="app-sidebar__overlay" data-toggle="sidebar"></div>
+			<aside class="app-sidebar sidebar-scroll">
+				<div class="main-sidebar-header active">
+					<a class="desktop-logo logo-light active" ><img src="{% static 'img/brand/logo.png' %}" class="main-logo" alt="logo"></a>
+					<a class="desktop-logo logo-dark active" ><img src="{% static 'img/brand/logo-white.png' %}" class="main-logo dark-theme" alt="logo"></a>
+					<a class="logo-icon mobile-logo icon-light active" ><img src="{% static 'img/brand/favicon.png' %}" class="logo-icon" alt="logo"></a>
+					<a class="logo-icon mobile-logo icon-dark active" ><img src="{% static 'img/brand/favicon-white.png' %}" class="logo-icon dark-theme" alt="logo"></a>
+				</div>
+				<div class="main-sidemenu">
+					<div class="app-sidebar__user clearfix">
+						<div class="dropdown user-pro-body">
+							<div class="">
+								<img alt="user-img" class="avatar avatar-xl brround" src="{% static 'img/faces/6.jpg' %}"><span class="avatar-status profile-status bg-green"></span>
+							</div>
+							<div class="user-info">
+								<h4 class="font-weight-semibold mt-3 mb-0">Petey Cruiser</h4>
+								<span class="mb-0 text-muted">Premium Member</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<!-- main-sidebar -->
+
+			<!-- main-content -->
+			<div class="main-content app-content">
+
+				<!-- main-header -->
+				<div class="main-header sticky side-header nav nav-item">
+					<div class="container-fluid">
+                        <div class="main-header-left ">
+							<div class="responsive-logo">
+								<a><img src="{% static 'img/brand/logo.png' %}" class="logo-1" alt="logo"></a>
+								<a><img src="{% static 'img/brand/logo-white.png' %}" class="dark-logo-1" alt="logo"></a>
+								<a><img src="{% static 'img/brand/favicon.png' %}" class="logo-2" alt="logo"></a>
+								<a><img src="{% static 'img/brand/favicon-white.png' %}" class="dark-logo-2" alt="logo"></a>
+							</div>
+							<div class="app-sidebar__toggle" data-toggle="sidebar">
+								<a class="open-toggle" href="#"><i class="header-icon fe fe-align-left" ></i></a>
+								<a class="close-toggle" href="#"><i class="header-icons fe fe-x"></i></a>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<!-- /main-header -->
+
+				<!-- container -->
+				<div class="container-fluid">
+
+					<!-- breadcrumb -->
+					<div class="breadcrumb-header justify-content-between">
+						<div class="my-auto">
+							<div class="d-flex">
+								<h4 class="content-title mb-0 my-auto">Documento OCR</h4>
+							</div>
+						</div>
+						
+					</div>
+					<!-- breadcrumb -->
+
+					<!-- row -->
+					<div class="row">
+						<!-- Element HTML -->
+
+						<div class="col-md-12">
+							<form
+							  action="{% url 'upload' %}"
+							  method="post"
+							  enctype="multipart/form-data">
+							  {% csrf_token %} {{ form.as_p }}
+							  <button class="btn btn-info my-4" type="submit">
+								<span><i class="bi bi-upload"></i></span> Subir documentos 
+							  </button>
+							</form>
+						</div>
+						
+					</div>
+					<!-- /row -->
+
+					
+				</div>
+				<!-- Container closed -->
+			</div>
+			<!-- main-content closed -->
+
+
+			<!-- Footer opened -->
+			<div class="main-footer ht-40">
+				<div class="container-fluid pd-t-0-f ht-100p">
+					<span>Copyright © 2024</span>
+				</div>
+			</div>
+			<!-- Footer closed -->
+
+		</div>
+		<!-- End Page -->
+
+		<!-- Back-to-top -->
+		<a href="#top" id="back-to-top"><i class="las la-angle-double-up"></i></a>
+
+		<!-- JQuery min js -->
+		<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+
+		<!-- Bootstrap Bundle js -->
+		<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+		<!--Internal  Select2 js -->
+		<!-- <script src="{% static 'plugins/select2/js/select2.min.js' %}"></script> -->
+
+		<!-- Ionicons js -->
+		<!-- <script src="{% static 'plugins/ionicons/ionicons.js' %}"></script> -->
+
+		<!-- Moment js -->
+		<!-- <script src="{% static 'plugins/moment/moment.js' %}"></script> -->
+
+		<!--Internal quill js -->
+		<script src="{% static 'plugins/quill/quill.min.js' %}"></script>
+
+		<!--Internal  Perfect-scrollbar js -->
+		<!-- <script src="{% static 'plugins/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script> -->
+
+		<!-- Rating js-->
+		<!-- <script src="{% static 'plugins/rating/jquery.rating-stars.js' %}"></script> -->
+		<!-- <script src="{% static 'plugins/rating/jquery.barrating.js' %}"></script> -->
+
+		<!-- P-scroll js -->
+		<!-- <script src="{% static 'plugins/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script> -->
+		<!-- <script src="{% static 'plugins/perfect-scrollbar/p-scroll.js' %}"></script> -->
+
+		<!-- Sidebar js -->
+		<script src="{% static 'plugins/side-menu/sidemenu1.js' %}"></script>
+
+		<!-- Right-sidebar js -->
+		<script src="{% static 'plugins/sidebar/sidebar.js' %}"></script>
+		<script src="{% static 'plugins/sidebar/sidebar-custom.js' %}"></script>
+
+		<!-- eva-icons js -->
+		<script src="{% static 'js/eva-icons.min.js' %}"></script>
+
+		<!-- Sticky js -->
+		<script src="{% static 'js/sticky.js' %}"></script>
+
+		<!-- Internal Form-editor js -->
+		<script src="{% static 'js/form-editor.js' %}"></script>
+
+		<!-- custom js -->
+		<script src="{% static 'js/custom.js' %}"></script>
+
+	</body>
+</html>
