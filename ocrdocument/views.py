@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.conf import settings
 from django.core.files import File
 from .forms import SubirDumentoImagenForm
@@ -10,7 +10,6 @@ os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'media/credencials/ocr-document.j
 from google.cloud import documentai
 from google.api_core.client_options import ClientOptions
 from dotenv import load_dotenv
-import json
 load_dotenv()
 
 
@@ -37,9 +36,9 @@ def upload(request):
             instancia.save()
             url_document = instancia.documento.url
             url_format = url_document[1:]
-
             get_text_form_pdf_ocr(url_format)
-        return redirect("homepage")
+
+        return JsonResponse({"success" : True})
 
 
 def listarData(request):
@@ -118,3 +117,4 @@ def get_text_form_pdf_ocr(file_path):
     except Exception as e:
         print(e)
         return None
+    
