@@ -90,7 +90,7 @@ def get_text_form_pdf_ocr(file_path):
 
             if entity.type_ == 'CARD_ID':
                 card_id = int(entity.mention_text)
-                array_card_id.append(card_id.strip())
+                array_card_id.append(card_id)
             elif entity.type_ == 'FULL_NAME':
                 full_name = entity.mention_text
                 array_full_name.append(full_name.replace("\n", " "))
