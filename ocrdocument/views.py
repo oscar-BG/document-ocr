@@ -2,14 +2,16 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.conf import settings
 from django.core.files import File
+from openpyxl import Workbook
 from .forms import SubirDumentoImagenForm
 from .models import SaveFileCsv
 from google.cloud import documentai
 from google.api_core.client_options import ClientOptions
 from dotenv import load_dotenv
 import os
-import csv
+import re
 import locale
+import json
 
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'media/credencials/ocr-document.json'
@@ -75,45 +77,69 @@ def get_text_form_pdf_ocr(file_path):
         # Convertir el objeto document a un diccionario
         # serialized_document = documentai.Document.to_dict(document)
         # Guardar el diccionario como JSON
-        # with open("media/document.json", "w") as json_file:
+        # with open("media/documentPag15.json", "w") as json_file:
             # json.dump(serialized_document, json_file, indent=4)
         
-        # data = [[entity.mention_text for entity in document.entities if entity.type_ == 'CARD_ID'],
-        #   [entity.mention_text for entity in document.entities if entity.type_ == 'FULL_NAME']]
+        
 
         
-        array_card_id = []
-        array_full_name = []
+        array_card_id = {}
+        array_full_name = {}
         for entity in document.entities:
             card_id = ""
             full_name = ""
+            pagina = int(entity.page_anchor.page_refs[0].page) + 1
 
             if entity.type_ == 'CARD_ID':
-                card_id = int(entity.mention_text)
-                array_card_id.append(card_id)
+                if re.match('^[0-9]+$', entity.mention_text):
+                    card_id = int(entity.mention_text)
+                else:
+                    texto_limpio = re.sub('[^0-9]', '', entity.mention_text)
+                    card_id = int(texto_limpio)
+                if pagina not in array_card_id:
+                    array_card_id[pagina] = []
+                array_card_id[pagina].append(card_id)
             elif entity.type_ == 'FULL_NAME':
                 full_name = entity.mention_text
-                array_full_name.append(full_name.replace("\n", " "))
+                full_name = full_name.replace("\n", " ")
+                if pagina not in array_full_name:
+                    array_full_name[pagina] = []
+                array_full_name[pagina].append(full_name)
 
         
-        print(array_card_id)
-        print(full_name)
-
-        array_card_id_sorted = sorted(array_card_id)
-        array_full_name_sorted = sorted(array_full_name, key=locale.strxfrm)
-        
-        csv_file_name = os.path.splitext(os.path.basename(file_path))[0] + ".csv"
-        csv_file_path = os.path.join("media/csv/", csv_file_name)
-        relative_csv_file_path = os.path.relpath(csv_file_path, settings.MEDIA_ROOT)
+        # Ordenar las listas de cada página
+        for page in array_card_id:
+            array_card_id[page] = sorted(array_card_id[page])
+        for page in array_full_name:
+            array_full_name[page] = sorted(array_full_name[page], key=locale.strxfrm)
 
 
-        with open(csv_file_path, mode='w', newline='', encoding='utf-8') as csv_file:
-            writer = csv.writer(csv_file)
-            writer.writerow(['CARD_ID', 'FULL_NAME'])  # Escribir encabezados
-            for card_id, full_name in zip(array_card_id_sorted, array_full_name_sorted):
-                writer.writerow([card_id, full_name])
+        print(page)
 
-        new_csv_instance = SaveFileCsv.objects.create(excel_file=relative_csv_file_path, name_document=csv_file_name)
+        document_file_name = os.path.splitext(os.path.basename(file_path))[0] + ".xlsx"
+        document_file_path = os.path.join("media/csv/", document_file_name)
+        relative_document_file_path = os.path.relpath(document_file_path, settings.MEDIA_ROOT)
+
+        # Crear libro
+        workbook = Workbook()
+
+        # Escribir datos en hojas separadas por página
+        for page, card_ids in array_card_id.items():
+            hoja = workbook.create_sheet(title=f'Página {page}')
+
+            hoja.append(['CARD_ID', 'FULL_NAME'])
+            full_names = array_full_name.get(page, [])
+
+            for card_id, full_name in zip(card_ids, full_names):
+                hoja.append([card_id, full_name])
+
+        # Eliminar la hoja predeterminada
+        workbook.remove(workbook['Sheet'])
+
+        # Guardar el libro de trabajo como un archivo Excel
+        workbook.save(filename=document_file_path)
+
+        new_csv_instance = SaveFileCsv.objects.create(excel_file=relative_document_file_path, name_document=document_file_name)
         
         return True
     except Exception as e:

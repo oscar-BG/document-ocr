@@ -3,6 +3,7 @@ db.sqlite3
 db.sqlite3-journal
 media/credencials/*.json
 media/csv/*.csv
+media/csv/*.xlsx
 media/documents/*.pdf
 __pycache__/
 .vscode/
