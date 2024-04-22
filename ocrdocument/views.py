@@ -4,19 +4,23 @@ from django.conf import settings
 from django.core.files import File
 from .forms import SubirDumentoImagenForm
 from .models import SaveFileCsv
-import os
-import csv
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'media/credencials/ocr-document.json'
 from google.cloud import documentai
 from google.api_core.client_options import ClientOptions
 from dotenv import load_dotenv
+import os
+import csv
+import locale
+
+
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'media/credencials/ocr-document.json'
 load_dotenv()
+locale.setlocale(locale.LC_ALL, 'es_ES.UTF-8')
 
 
-endpoint = os.getenv('ENDPOINT')
-location = os.getenv('LOCATION') 
-project_id = os.getenv('PROJECT_ID')
-processor_id = os.getenv('PROCESSOR_ID')
+endpoint        = os.getenv('ENDPOINT')
+location        = os.getenv('LOCATION') 
+project_id      = os.getenv('PROJECT_ID')
+processor_id    = os.getenv('PROCESSOR_ID')
 
 # Create your views here.
 
@@ -85,30 +89,28 @@ def get_text_form_pdf_ocr(file_path):
             full_name = ""
 
             if entity.type_ == 'CARD_ID':
-                card_id = entity.mention_text
+                card_id = int(entity.mention_text)
                 array_card_id.append(card_id.strip())
             elif entity.type_ == 'FULL_NAME':
                 full_name = entity.mention_text
                 array_full_name.append(full_name.replace("\n", " "))
 
-            # data.append([card_id.strip(), full_name.strip()])
         
         print(array_card_id)
         print(full_name)
+
+        array_card_id_sorted = sorted(array_card_id)
+        array_full_name_sorted = sorted(array_full_name, key=locale.strxfrm)
         
         csv_file_name = os.path.splitext(os.path.basename(file_path))[0] + ".csv"
         csv_file_path = os.path.join("media/csv/", csv_file_name)
-
         relative_csv_file_path = os.path.relpath(csv_file_path, settings.MEDIA_ROOT)
 
-        # filtered_data = [row for row in csv_data if any(cell.strip() for cell in row)]
-
-        # print(filtered_data)
 
         with open(csv_file_path, mode='w', newline='', encoding='utf-8') as csv_file:
             writer = csv.writer(csv_file)
             writer.writerow(['CARD_ID', 'FULL_NAME'])  # Escribir encabezados
-            for card_id, full_name in zip(array_card_id, array_full_name):
+            for card_id, full_name in zip(array_card_id_sorted, array_full_name_sorted):
                 writer.writerow([card_id, full_name])
 
         new_csv_instance = SaveFileCsv.objects.create(excel_file=relative_csv_file_path, name_document=csv_file_name)
