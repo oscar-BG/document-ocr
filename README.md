@@ -12,5 +12,5 @@ python manage.py migrate ocrdocument
 
 # Levantar servidor
 ```
-python manage.py run server 0.0.0.0:8080
+python manage.py runserver 0.0.0.0:8080
 ```
